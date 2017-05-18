@@ -42,7 +42,7 @@ def scenario_to_test(request):
     indirect=['scenario_to_test', 'skip_test'])
 def test_command_check(scenario_to_test, with_scenario, skip_test,
                        scenario_name):
-    cmd = sh.molecule.bake('check', '--scenario-name', scenario_name)
+    cmd = sh.molecule.bake('check', {'scenario-name': scenario_name})
     pytest.helpers.run_command(cmd)
 
 
@@ -60,7 +60,7 @@ def test_command_check(scenario_to_test, with_scenario, skip_test,
     indirect=['scenario_to_test', 'skip_test'])
 def test_command_converge(scenario_to_test, with_scenario, skip_test,
                           scenario_name):
-    cmd = sh.molecule.bake('converge', '--scenario-name', scenario_name)
+    cmd = sh.molecule.bake('converge', {'scenario-name': scenario_name})
     pytest.helpers.run_command(cmd)
 
 
@@ -78,7 +78,7 @@ def test_command_converge(scenario_to_test, with_scenario, skip_test,
     indirect=['scenario_to_test', 'skip_test'])
 def test_command_create(scenario_to_test, with_scenario, skip_test,
                         scenario_name):
-    cmd = sh.molecule.bake('create', '--scenario-name', scenario_name)
+    cmd = sh.molecule.bake('create', {'scenario-name': scenario_name})
     pytest.helpers.run_command(cmd)
 
 
@@ -93,7 +93,7 @@ def test_command_create(scenario_to_test, with_scenario, skip_test,
     indirect=['scenario_to_test', 'skip_test'])
 def test_command_dependency_ansible_galaxy(scenario_to_test, with_scenario,
                                            skip_test):
-    cmd = sh.molecule.bake('dependency', '--scenario-name', 'ansible-galaxy')
+    cmd = sh.molecule.bake('dependency', {'scenario-name', 'ansible-galaxy'})
     pytest.helpers.run_command(cmd)
 
     dependency_role = os.path.join('molecule', 'ansible-galaxy', '.molecule',
@@ -111,7 +111,7 @@ def test_command_dependency_ansible_galaxy(scenario_to_test, with_scenario,
     ],
     indirect=['scenario_to_test', 'skip_test'])
 def test_command_dependency_gilt(scenario_to_test, with_scenario, skip_test):
-    cmd = sh.molecule.bake('dependency', '--scenario-name', 'gilt')
+    cmd = sh.molecule.bake('dependency', {'scenario-name': 'gilt'})
     pytest.helpers.run_command(cmd)
 
     dependency_role = os.path.join('molecule', 'ansible-galaxy', '.molecule',
@@ -133,7 +133,7 @@ def test_command_dependency_gilt(scenario_to_test, with_scenario, skip_test):
     indirect=['scenario_to_test', 'skip_test'])
 def test_command_destroy(scenario_to_test, with_scenario, skip_test,
                          scenario_name):
-    cmd = sh.molecule.bake('destroy', '--scenario-name', scenario_name)
+    cmd = sh.molecule.bake('destroy', {'scenario-name': scenario_name})
     pytest.helpers.run_command(cmd)
 
 
@@ -194,7 +194,7 @@ def test_command_init_scenario(temp_dir, driver_name, skip_test):
     indirect=['scenario_to_test', 'skip_test'])
 def test_command_lint(scenario_to_test, with_scenario, skip_test,
                       scenario_name):
-    cmd = sh.molecule.bake('lint', '--scenario-name', scenario_name)
+    cmd = sh.molecule.bake('lint', {'scenario-name': scenario_name})
     pytest.helpers.run_command(cmd)
 
 
@@ -337,20 +337,20 @@ def test_command_login(scenario_to_test, with_scenario, skip_test, instance,
     indirect=['scenario_to_test', 'skip_test'])
 def test_command_syntax(scenario_to_test, with_scenario, skip_test,
                         scenario_name):
-    cmd = sh.molecule.bake('syntax', '--scenario-name', scenario_name)
+    cmd = sh.molecule.bake('syntax', {'scenario-name': scenario_name})
     pytest.helpers.run_command(cmd)
 
 
 @pytest.mark.parametrize(
     'scenario_to_test, skip_test, scenario_name', [
-        ('driver/docker', 'docker', 'all'),
-        ('driver/lxc', 'lxc', 'all'),
-        ('driver/lxd', 'lxd', 'all'),
-        ('driver/openstack', 'openstack', 'all'),
+        ('driver/docker', 'docker', None),
+        ('driver/lxc', 'lxc', None),
+        ('driver/lxd', 'lxd', None),
+        ('driver/openstack', 'openstack', None),
         ('driver/static', 'docker', 'docker'),
         ('driver/static', 'openstack', 'openstack'),
         ('driver/static', 'vagrant', 'vagrant'),
-        ('driver/vagrant', 'vagrant', 'all'),
+        ('driver/vagrant', 'vagrant', None),
     ],
     indirect=['scenario_to_test', 'skip_test'])
 def test_command_test(scenario_to_test, with_scenario, skip_test,

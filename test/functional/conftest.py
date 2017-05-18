@@ -41,7 +41,7 @@ def with_scenario(request, scenario_to_test):
     os.chdir(scenario_directory)
 
     def cleanup():
-        cmd = sh.molecule.bake('list', '--format', 'yaml')
+        cmd = sh.molecule.bake('list', {'format': 'yaml'})
         out = run_command(cmd, log=False)
         out = out.stdout
         out = util.strip_ansi_color(out)
@@ -57,7 +57,7 @@ def with_scenario(request, scenario_to_test):
             msg = "CLEANUP: Destroying instances for '{}' scenario".format(
                 scenario_name)
             LOG.out(msg)
-            cmd = sh.molecule.bake('destroy', '--scenario-name', scenario_name)
+            cmd = sh.molecule.bake('destroy', {'scenario-name': scenario_name})
             run_command(cmd)
 
     request.addfinalizer(cleanup)
@@ -79,13 +79,13 @@ def skip_test(request):
 
 @pytest.helpers.register
 def idempotence(scenario_name):
-    cmd = sh.molecule.bake('create', '--scenario-name', scenario_name)
+    cmd = sh.molecule.bake('create', {'scenario-name': scenario_name})
     run_command(cmd)
 
-    cmd = sh.molecule.bake('converge', '--scenario-name', scenario_name)
+    cmd = sh.molecule.bake('converge', {'scenario-name': scenario_name})
     run_command(cmd)
 
-    cmd = sh.molecule.bake('idempotence', '--scenario-name', scenario_name)
+    cmd = sh.molecule.bake('idempotence', {'scenario-name': scenario_name})
     run_command(cmd)
 
 
@@ -93,8 +93,9 @@ def idempotence(scenario_name):
 def init_role(temp_dir, driver_name):
     role_directory = os.path.join(temp_dir.strpath, 'test-init')
 
-    cmd = sh.molecule.bake('init', 'role', '--driver-name', driver_name,
-                           '--role-name', 'test-init')
+    cmd = sh.molecule.bake(
+        'init', 'role', {'driver-name': driver_name,
+                         'role-name': 'test-init'})
     run_command(cmd)
 
     os.chdir(role_directory)
@@ -106,8 +107,9 @@ def init_role(temp_dir, driver_name):
 def init_scenario(temp_dir, driver_name):
     # Create role
     role_directory = os.path.join(temp_dir.strpath, 'test-init')
-    cmd = sh.molecule.bake('init', 'role', '--driver-name', driver_name,
-                           '--role-name', 'test-init')
+    cmd = sh.molecule.bake(
+        'init', 'role', {'driver-name': driver_name,
+                         'role-name': 'test-init'})
     run_command(cmd)
     os.chdir(role_directory)
 
@@ -115,13 +117,15 @@ def init_scenario(temp_dir, driver_name):
     molecule_directory = config.molecule_directory(role_directory)
     scenario_directory = os.path.join(molecule_directory, 'test-scenario')
 
-    cmd = sh.molecule.bake('init', 'scenario', '--scenario-name',
-                           'test-scenario', '--role-name', 'test-init')
+    cmd = sh.molecule.bake('init', 'scenario', {
+        'scenario-name': 'test-scenario',
+        'role-name': 'test-init'
+    })
     run_command(cmd)
 
     assert os.path.isdir(scenario_directory)
 
-    cmd = sh.molecule.bake('test', '--scenario-name', 'test-scenario')
+    cmd = sh.molecule.bake('test', {'scenario-name': 'test-scenario'})
     run_command(cmd)
 
 
@@ -137,7 +141,7 @@ def list(x):
 
 @pytest.helpers.register
 def list_with_format_plain(x):
-    cmd = sh.molecule.bake('list', '--format', 'plain')
+    cmd = sh.molecule.bake('list', {'format': 'plain'})
     out = run_command(cmd, log=False)
     out = out.stdout
     out = util.strip_ansi_color(out)
@@ -147,7 +151,7 @@ def list_with_format_plain(x):
 
 @pytest.helpers.register
 def login(instance, regexp, scenario_name='default'):
-    cmd = sh.molecule.bake('create', '--scenario-name', scenario_name)
+    cmd = sh.molecule.bake('create', {'scenario-name': scenario_name})
     run_command(cmd)
 
     child_cmd = 'molecule login --host {} --scenario-name {}'.format(
@@ -160,23 +164,19 @@ def login(instance, regexp, scenario_name='default'):
 
 @pytest.helpers.register
 def test(scenario_name='default'):
-    if scenario_name is 'all':
-        cmd = sh.molecule.bake('test')
-        run_command(cmd)
-    else:
-        cmd = sh.molecule.bake('test', '--scenario-name', scenario_name)
-        run_command(cmd)
+    cmd = sh.molecule.bake('test', {'scenario-name': scenario_name})
+    run_command(cmd)
 
 
 @pytest.helpers.register
 def verify(scenario_name='default'):
-    cmd = sh.molecule.bake('create', '--scenario-name', scenario_name)
+    cmd = sh.molecule.bake('create', {'scenario-name': scenario_name})
     run_command(cmd)
 
-    cmd = sh.molecule.bake('converge', '--scenario-name', scenario_name)
+    cmd = sh.molecule.bake('converge', {'scenario-name': scenario_name})
     run_command(cmd)
 
-    cmd = sh.molecule.bake('verify', '--scenario-name', scenario_name)
+    cmd = sh.molecule.bake('verify', {'scenario-name': scenario_name})
     run_command(cmd)
 
 
